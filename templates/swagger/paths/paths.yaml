@@ -1,0 +1,32 @@
+get:
+  tags:
+    - <%- tsClass.name %>
+  summary: Retrieves all <%- tsClass.name.toLowerCase() %>s.
+  responses:
+    200:
+      description: Success
+    404:
+      description: Notfound
+    400:
+      description: Bad Request
+    500:
+      description: Internal Server Error
+post:
+  tags:
+    - <%- tsClass.name %>
+  summary: Creates a new <%- tsClass.name.toLowerCase() %>.
+  consumes:
+    - application/json
+  parameters:
+    - in: body
+      name: <%- tsClass.name.toLowerCase() %>
+      description: The <%- tsClass.name.toLowerCase() %> to create.
+      schema:
+        $ref: "#/definitions/<%- tsClass.name %>"
+  responses:
+    200:
+      description: OK
+    201:
+      description: CREATED
+    500:
+      description: Internal Server Error

@@ -1,0 +1,54 @@
+{
+  "name": "generator-wilbur",
+  "description": "Yeoman generator to quick-start NodeJS + ExpressJS+ MongoDB application development with loads of features (written in TypeScript 3.x)",
+  "version": "0.0.1",
+  "repository": {
+    "url": "https://github.com/alexbatis/generator-wilbur"
+  },
+  "main": "generators/app/index.js",
+  "files": [
+    "app",
+    "router"
+  ],
+  "keywords": [
+    "node",
+    "nodejs",
+    "express",
+    "expressjs",
+    "typescript",
+    "api",
+    "mongo",
+    "mongodb",
+    "mongoose",
+    "typegoose",
+    "yeoman",
+    "yeoman-generator",
+    "wilbur"
+  ],
+  "dependencies": {
+    "chalk": "^2.1.0",
+    "class-validator": "^0.9.1",
+    "concurrently": "^4.0.1",
+    "directory-exists": "^2.0.1",
+    "json2typescript": "^1.0.6",
+    "rmfr": "^2.0.0",
+    "uuid": "^3.3.2",
+    "yeoman-generator": "^2.0.1",
+    "yosay": "^2.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^10.11.4",
+    "@types/yeoman-generator": "^2.0.3",
+    "tsc-watch": "^1.0.29",
+    "typescript": "^3.1.1"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc-watch"
+  },
+  "author": {
+    "name": "Alex Batis",
+    "url": "https://github.com/alexbatis"
+  },
+  "license": "MIT"
+}

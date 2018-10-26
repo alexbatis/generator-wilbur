@@ -1,0 +1,56 @@
+get:
+  tags:
+    - <%- tsClass.name %>
+  summary: Retrieves a single <%- tsClass.name.toLowerCase() %> by id.
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: The id of the <%- tsClass.name %> to retrieve.
+      type: string 
+  responses:
+    200:
+      description: Return the <%- tsClass.name.toLowerCase() %> with the specified id
+    404:
+      description: <%- tsClass.name %> not found
+    500:
+      description: Internal Server Error
+put:
+  tags:
+    - <%- tsClass.name %>
+  summary: Updates <%- tsClass.name.toLowerCase() %>.
+  consumes:
+    - application/json
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: The id of the <%- tsClass.name %> to update.
+      type: string 
+    - in: body
+      name: <%- tsClass.name.toLowerCase() %>
+      description: The <%- tsClass.name.toLowerCase() %> to update.
+      schema:
+        $ref: "#/definitions/<%- tsClass.name %>"
+  responses:
+    200:
+      description: OK
+    500:
+      description: Internal Server Error
+delete:
+  tags:
+    - <%- tsClass.name %>
+  summary: Deletes a single <%- tsClass.name.toLowerCase() %> by id.
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: The id of the <%- tsClass.name %> to delete.
+      type: string 
+  responses:
+    204:
+      description: No Content
+    404:
+      description: <%- tsClass.name %> not found
+    500:
+      description: Internal Server Error

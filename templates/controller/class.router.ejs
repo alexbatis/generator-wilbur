@@ -1,0 +1,14 @@
+<% 
+const modelNameLowerCaseFirst = tsClass.name.charAt(0).toLowerCase() + tsClass.name.substring(1);
+-%>
+import * as express from "express";
+import * as expressValidator from "express-validator";
+import { <%- modelNameLowerCaseFirst %>Controller, <%- modelNameLowerCaseFirst %>Validator } from "@controllers";
+
+export const <%- tsClass.name %>Router = express.Router()
+    .use(expressValidator())
+    .get("/", <%- modelNameLowerCaseFirst %>Controller.all)
+    .get("/:id", <%- modelNameLowerCaseFirst %>Validator.validateMongoID, <%- modelNameLowerCaseFirst %>Controller.byId)
+    .post("/", <%- modelNameLowerCaseFirst %>Validator.validatePost, <%- modelNameLowerCaseFirst %>Controller.create)
+    .put("/:id", <%- modelNameLowerCaseFirst %>Validator.validatePut, <%- modelNameLowerCaseFirst %>Validator.validateMongoID, <%- modelNameLowerCaseFirst %>Controller.update)
+    .delete("/:id", <%- modelNameLowerCaseFirst %>Validator.validateMongoID, <%- modelNameLowerCaseFirst %>Controller.delete);

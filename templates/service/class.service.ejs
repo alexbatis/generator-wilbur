@@ -1,0 +1,50 @@
+<% 
+const modelNameLowerCaseFirst = tsClass.name.charAt(0).toLowerCase() + tsClass.name.substring(1);
+-%>
+import { ABError, <%- tsClass.name %>, <%- tsClass.name %>Model } from "@models";
+
+export class <%- tsClass.name %>Service {
+    async all(): Promise<<%- tsClass.name %>[]> {
+        const <%- modelNameLowerCaseFirst %>s: <%- tsClass.name %>[] = await <%- tsClass.name %>Model.find({});
+        return <%- modelNameLowerCaseFirst %>s;
+    }
+
+    async byID(id: string): Promise<<%- tsClass.name %>> {
+        const <%- modelNameLowerCaseFirst %>: <%- tsClass.name %> = await <%- tsClass.name %>Model.findById(id);
+        if (!<%- modelNameLowerCaseFirst %>) throw new ABError({ "status": 404, "error": `Could not retrieve <%- modelNameLowerCaseFirst %> with id ${id}` });
+        return <%- modelNameLowerCaseFirst %>;
+    }
+
+    async update(id: string, updated<%- tsClass.name %>: <%- tsClass.name %>): Promise<<%- tsClass.name %>> {
+        const existing<%- tsClass.name %>: <%- tsClass.name %> = await <%- tsClass.name %>Model.findById(id);
+        if (!existing<%- tsClass.name %>) throw new ABError({ "status": 404, "error": `Could not retrieve <%- modelNameLowerCaseFirst %> with id ${id}` });
+        const updated<%- tsClass.name %>ToValidate = new <%- tsClass.name %>(existing<%- tsClass.name %>);
+        await updated<%- tsClass.name %>ToValidate.updateAndValidate(updated<%- tsClass.name %>);
+        const <%- modelNameLowerCaseFirst %>: <%- tsClass.name %> = await <%- tsClass.name %>Model.findByIdAndUpdate(id, updated<%- tsClass.name %>ToValidate, { new: true });
+        return <%- modelNameLowerCaseFirst %>;
+    }
+
+    async create(<%- modelNameLowerCaseFirst %>: <%- tsClass.name %>): Promise<<%- tsClass.name %>> {
+        await this.validate<%- tsClass.name %>(<%- modelNameLowerCaseFirst %>);
+        const <%- modelNameLowerCaseFirst %>ToAdd = new <%- tsClass.name %>Model(<%- modelNameLowerCaseFirst %>);
+        const created<%- tsClass.name %> = await <%- modelNameLowerCaseFirst %>ToAdd.save();
+        return created<%- tsClass.name %>;
+    }
+
+    async delete(id: string): Promise<<%- tsClass.name %>> {
+        const <%- modelNameLowerCaseFirst %>: <%- tsClass.name %> = await <%- tsClass.name %>Model.findByIdAndRemove(id);
+        if (!<%- modelNameLowerCaseFirst %>) throw new ABError({ "status": 404, "error": `Could not delete <%- modelNameLowerCaseFirst %> with id ${id}` });
+        return <%- modelNameLowerCaseFirst %>;
+    }
+
+    async validate<%- tsClass.name %>(<%- modelNameLowerCaseFirst %>: any) {
+        const <%- modelNameLowerCaseFirst %>ToValidate = new <%- tsClass.name %>(<%- modelNameLowerCaseFirst %>);
+        try { await <%- modelNameLowerCaseFirst %>ToValidate.validate(); }
+        catch (err) { throw new ABError({ error: err, status: 400, message: "Bad Request" }); }
+    }
+
+}
+
+// Exported Instance
+export const <%- modelNameLowerCaseFirst %>Service = new <%- tsClass.name %>Service();
+

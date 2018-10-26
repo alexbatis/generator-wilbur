@@ -1,0 +1,2 @@
+- name: <%- tsClass.name %>
+  description: <%- tsClass.name %> Endpoints

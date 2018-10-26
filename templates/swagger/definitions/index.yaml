@@ -1,0 +1,4 @@
+<% for (var i = 0; i < configuration.classes.length; i++) { -%>
+<%- configuration.classes[i].name %>:
+  $ref: ./<%- configuration.classes[i].name %>.definition.yaml
+<% } -%>

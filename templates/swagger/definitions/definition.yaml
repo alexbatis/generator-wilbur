@@ -1,0 +1,9 @@
+type: object
+required:
+<% for (var j=0; j < tsClass.memberVariables.length; j++) { -%>
+<%if (tsClass.memberVariables[j].decorators.findIndex(d=> d.name == 'IsNotEmpty') != -1) {%> - <%- tsClass.memberVariables[j].name %><%}%>
+<% } -%>
+properties:<% for (var j=0; j < tsClass.memberVariables.length; j++) { %>
+    <%- tsClass.memberVariables[j].name -%>:
+        type: <%if (tsClass.memberVariables[j].isArray == true) {%>Array<<%}%><%- tsClass.memberVariables[j].type -%><%if (tsClass.memberVariables[j].isArray == true) {%>><%}-%>
+<% } -%>

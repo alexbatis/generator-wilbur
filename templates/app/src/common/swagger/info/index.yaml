@@ -1,0 +1,3 @@
+version: 1.0.0
+title: <%= configuration.appName %>
+description: <%= configuration.description %>
