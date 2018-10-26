@@ -8,7 +8,17 @@
   "main": "generators/app/index.js",
   "files": [
     "app",
-    "router"
+    "router",
+    "add-class",
+    "boilerplate",
+    "constants",
+    "models",
+    "remove-class",
+    "services",
+    "utils",
+    "src",
+    "generators",
+    "templates"
   ],
   "keywords": [
     "node",
