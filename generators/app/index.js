@@ -54,9 +54,9 @@ class WilburAppGenerator extends Generator {
     }
     install() {
         process.chdir(process.cwd() + `/${this.appToGenerate.appName}`);
-        if (this.options.install)
+        if (this.options.install || this.options['install'])
             this.npmInstall();
-        else if (this.options.yarnInstall)
+        else if (this.options.yarnInstall || this.options['yarn-install'])
             this.yarnInstall();
     }
     end() {

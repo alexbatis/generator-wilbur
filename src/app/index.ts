@@ -69,9 +69,9 @@ class WilburAppGenerator extends Generator {
 	// Install dependencies based on flags at runtime
 	public install(): void {
 		process.chdir(process.cwd() + `/${this.appToGenerate.appName}`);
-		if (this.options.install)
+		if (this.options.install || this.options['install'])
 			this.npmInstall();					// Install deps with npm
-		else if (this.options.yarnInstall)
+		else if (this.options.yarnInstall || this.options['yarn-install'])
 			this.yarnInstall();					// Install deps with yarn
 	}
 

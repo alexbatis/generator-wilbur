@@ -23,9 +23,9 @@ class WilburBoilerplateAppGenerator extends Generator {
     }
     install() {
         process.chdir(process.cwd() + `/${index_1.boilerplateApp.appName}`);
-        if (this.options.install)
+        if (this.options.install || this.options['install'])
             this.npmInstall();
-        else if (this.options.yarnInstall)
+        else if (this.options.yarnInstall || this.options['yarn-install'])
             this.yarnInstall();
     }
     end() {
