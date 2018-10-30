@@ -9,8 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Generator = require("yeoman-generator");
-const index_1 = require("../models/index");
-const index_2 = require("../utils/index");
+const index_1 = require("../utils/index");
 const constants_1 = require("../constants");
 var SwaggerActionType;
 (function (SwaggerActionType) {
@@ -21,8 +20,8 @@ class SwaggerService extends Generator {
     constructor(args, options, appName) {
         super(args, options);
         this.appName = appName;
-        this.fileUtil = new index_2.FileUtils();
-        this.generalUtils = new index_2.GeneralUtils(args, options);
+        this.fileUtil = new index_1.FileUtils();
+        this.generalUtils = new index_1.GeneralUtils(args, options);
         this.outputDirectories = constants_1.constants.generateOutputDirectories(this.destinationPath(this.appName));
     }
     addSwaggerDocs(tsClass) {
@@ -33,7 +32,7 @@ class SwaggerService extends Generator {
     }
     removeSwaggerDocs(tsClass) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.tsClass = new index_1.Class();
+            this.tsClass = tsClass;
             yield this.removeSwaggerFiles();
             this.updateSwaggerDefinitionIndexFile(SwaggerActionType.REMOVE);
             this.updateSwaggerPathsIndexFile(SwaggerActionType.REMOVE);

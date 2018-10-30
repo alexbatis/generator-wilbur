@@ -33,7 +33,7 @@ export class SwaggerService extends Generator {
 
     /* Given a class, remove all necessary files for swagger documentation */
     async removeSwaggerDocs(tsClass: Class) {
-        this.tsClass = new Class();                                         // Scope empty class to generate swagger docs
+        this.tsClass = tsClass;                                             // Scope empty class to generate swagger docs
         await this.removeSwaggerFiles();                                    // Remove all swagger documentation files for class
         this.updateSwaggerDefinitionIndexFile(SwaggerActionType.REMOVE);    // Remove references from swagger definition files
         this.updateSwaggerPathsIndexFile(SwaggerActionType.REMOVE);         // Remove references from swagger paths file
