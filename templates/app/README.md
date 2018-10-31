@@ -1,4 +1,4 @@
-# cnc-api
+# <%= configuration.appName %>
 
 <%= configuration.description %>
 
@@ -9,7 +9,7 @@ $ mongod
 
 ## Install It
 ```
-$yarn install
+$ yarn install
 ```
 
 ## Run It
