@@ -1,7 +1,7 @@
 {
   "name": "generator-wilbur",
   "description": "Yeoman generator to quick-start NodeJS + ExpressJS+ MongoDB application development with loads of features (written in TypeScript 3.x)",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "repository": {
     "url": "https://github.com/alexbatis/generator-wilbur"
   },
