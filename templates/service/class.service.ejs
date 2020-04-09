@@ -39,7 +39,7 @@ export class <%- tsClass.name %>Service {
 
     async validate<%- tsClass.name %>(<%- modelNameLowerCaseFirst %>: any) {
         const <%- modelNameLowerCaseFirst %>ToValidate = new <%- tsClass.name %>(<%- modelNameLowerCaseFirst %>);
-        try { await <%- modelNameLowerCaseFirst %>ToValidate.validate(); }
+        try { await <%- modelNameLowerCaseFirst %>ToValidate.validateInstance(); }
         catch (err) { throw new ABError({ error: err, status: 400, message: "Bad Request" }); }
     }
 
