@@ -25,6 +25,7 @@ class WilburBoilerplateAppGenerator extends Generator {
 
 	constructor(args: any, options: any) {
 		super(args, options);
+		options.useDI = (options.useDI !== 'false')
 		this.args = args;
 		this.options = options;
 		this.log(constants.wordArt.wilburLogo);

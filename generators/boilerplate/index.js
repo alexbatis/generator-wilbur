@@ -7,6 +7,7 @@ const index_3 = require("../services/index");
 class WilburBoilerplateAppGenerator extends Generator {
     constructor(args, options) {
         super(args, options);
+        options.useDI = (options.useDI !== 'false');
         this.args = args;
         this.options = options;
         this.log(index_1.constants.wordArt.wilburLogo);

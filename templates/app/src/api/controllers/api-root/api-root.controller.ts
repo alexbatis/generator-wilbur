@@ -1,33 +1,29 @@
-import { Request, Response } from "express";
-import { controllerService } from "@services";
+/* -------------------------------------------------------------------------- */
+/*                                   IMPORTS                                  */
+/* -------------------------------------------------------------------------- */
+/* ------------------------------- THIRD PARTY ------------------------------ */
+import { interfaces, controller, httpGet } from "inversify-express-utils";
+/* --------------------------------- CUSTOM --------------------------------- */
 import * as controllers from "@controllers";
 
-export class ApiRootController {
-    async handleRoot(req: Request, res: Response) {
-        try {
-            // extract model keys
-            const models = [];
-            for (let key in controllers)
-                if (controllers.hasOwnProperty(key))
-                    if (key.indexOf("Router") !== -1 && key.indexOf("General") === -1 && key.indexOf("ApiRoot") === -1) {
-                        key = key.substring(0, key.indexOf("Router")).toLowerCase() + "s";
-                        models.push(key);
-                    }
 
+/* -------------------------------------------------------------------------- */
+/*                            CONTROLLER DEFINITION                           */
+/* -------------------------------------------------------------------------- */
+@controller("/api/v1")
+export class ApiRootController implements interfaces.Controller {
 
-            // Build catalog object
-            const catalog: any = [
-                `${process.env.DOMAIN}`,
-                `${process.env.DOMAIN}/docs`
-            ];
-            models.forEach((model, i) => {
-                catalog.push(`${process.env.DOMAIN}/api/v1/${model}`);
-            });
+    @httpGet("/")
+    async handleRoot() {
+        const endpoints: any = [`${process.env.DOMAIN}`, `${process.env.DOMAIN}/docs`];
+        let controllerKeys = Object.keys(controllers)
+            .map(key => key.toLowerCase())
+            .filter(key => key.includes("controller") && !key.includes("general") && !key.includes("apiroot"))
+            .map(key => key.replace("controller", ""));
 
-            res.json({ endpoints: catalog });
-        } catch (err) { controllerService.handleError(err, res); }
+        controllerKeys = Array.from(new Set(controllerKeys)); // Remove Duplicates
+
+        controllerKeys.forEach(key => endpoints.push(`${process.env.DOMAIN}/api/v1/${key}s`));
+        return { endpoints };
     }
 }
-
-// Exported Instance
-export const apiRootController = new ApiRootController();

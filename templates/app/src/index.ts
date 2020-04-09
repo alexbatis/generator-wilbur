@@ -1,11 +1,15 @@
-/*------------------------------IMPORTS------------------------------*/
-/*--------------------THIRD PARTY-------------------*/
-/*--------------------CUSTOM-------------------*/
-import { env, app } from "@common";
-import { routes } from "./routes";
+/* -------------------------------------------------------------------------- */
+/*                                   IMPORTS                                  */
+/* -------------------------------------------------------------------------- */
+/* ------------------------------- THIRD PARTY ------------------------------ */
+import "reflect-metadata";
+/* --------------------------------- CUSTOM --------------------------------- */
+import { logger, ExpressServerNew } from "@common";
 
-const port = parseInt(process.env.PORT);
-app.router(routes);
-app.connectToDB().then(() => app.listen(port));
-
-export default app;
+/* -------------------------------------------------------------------------- */
+/*                              MAIN APPLICATION                              */
+/* -------------------------------------------------------------------------- */
+const app = new ExpressServerNew();         // Create application
+app.connectToDB()                           // Connect to DB & start application
+    .then(_ => app.listen())
+    .catch(err => logger.error("Error connecting to database", err));

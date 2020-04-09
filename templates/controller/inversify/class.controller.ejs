@@ -1,0 +1,50 @@
+<% 
+const modelNameLowerCaseFirst = tsClass.name.charAt(0).toLowerCase() + tsClass.name.substring(1);
+-%>
+/* -------------------------------------------------------------------------- */
+/*                                   IMPORTS                                  */
+/* -------------------------------------------------------------------------- */
+/* --------------------------------- CUSTOM --------------------------------- */
+import { interfaces, controller, httpGet, httpPost, httpPut, httpDelete, response, requestParam, requestBody } from "inversify-express-utils";
+import { inject } from "inversify";
+import { Response } from "express";
+/* --------------------------------- CUSTOM --------------------------------- */
+import { <%- tsClass.name %>Service } from "@services";
+import { <%- modelNameLowerCaseFirst %>Validator } from "./<%- modelNameLowerCaseFirst %>.validator";
+
+
+/* -------------------------------------------------------------------------- */
+/*                            CONTROLLER DEFINITION                           */
+/* -------------------------------------------------------------------------- */
+@controller("/api/v1/<%- modelNameLowerCaseFirst %>s")
+export class <%- tsClass.name %>Controller implements interfaces.Controller {
+
+    constructor(@inject("<%- tsClass.name %>Service") private <%- modelNameLowerCaseFirst %>Service: <%- tsClass.name %>Service) { }
+
+    @httpGet("/")
+    async index() {
+        return this.<%- modelNameLowerCaseFirst %>Service.all();
+    }
+
+    @httpGet("/:id", <%- modelNameLowerCaseFirst %>Validator.validateMongoID)
+    async list(@requestParam("id") id: string) {
+        return this.<%- modelNameLowerCaseFirst %>Service.byID(id);
+    }
+
+    @httpPost("/")
+    async create(@requestBody() body, @response() res: Response) {
+        const <%- modelNameLowerCaseFirst %> = await this.<%- modelNameLowerCaseFirst %>Service.create(body);
+        return res.status(201).json(<%- modelNameLowerCaseFirst %>);
+    }
+
+    @httpPut("/:id", <%- modelNameLowerCaseFirst %>Validator.validatePut)
+    async update(@requestParam("id") id: string, @requestBody() body) {
+        return this.<%- modelNameLowerCaseFirst %>Service.update(id, body);
+    }
+
+    @httpDelete("/:id")
+    async delete(@requestParam("id") id: string, @response() res: Response) {
+        await this.<%- modelNameLowerCaseFirst %>Service.delete(id);
+        return res.status(204).send();
+    }
+}

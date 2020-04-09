@@ -39,12 +39,14 @@ class GeneralUtils extends Generator {
                 },
                 controller: {
                     base: sourceRoot + index_1.constants.filePaths.templates.base + index_1.constants.filePaths.templates.controller.base,
+                    inversify: sourceRoot + index_1.constants.filePaths.templates.base + index_1.constants.filePaths.templates.controller.inversify,
                     controller: sourceRoot + index_1.constants.filePaths.templates.base + index_1.constants.filePaths.templates.controller.controller,
                     router: sourceRoot + index_1.constants.filePaths.templates.base + index_1.constants.filePaths.templates.controller.router,
                     validator: sourceRoot + index_1.constants.filePaths.templates.base + index_1.constants.filePaths.templates.controller.validator
                 },
                 service: {
                     base: sourceRoot + index_1.constants.filePaths.templates.base + index_1.constants.filePaths.templates.service.base,
+                    inversify: sourceRoot + index_1.constants.filePaths.templates.base + index_1.constants.filePaths.templates.service.inversify,
                     service: sourceRoot + index_1.constants.filePaths.templates.base + index_1.constants.filePaths.templates.service.service
                 },
                 other: {

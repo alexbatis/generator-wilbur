@@ -52,7 +52,8 @@ class WilburAddClassGenerator extends Generator {
 			try {
 				const classConfig = this.fs.readJSON(this.answers.classConfigurationFilePath);					// Read file contents of class config file
 				this.classToGenerate = commonService.deserialize<Class>(classConfig, Class);					// De-serialze the file's contents
-				this.classService = new ClassService(this.args, this.options);									// Initialize class service with de-serialized class configuration 
+				const options = Object.assign({}, this.options, { useDI : this.answers.useDI})					// Create Options
+				this.classService = new ClassService(this.args, options);												// Initialize class service with de-serialized class configuration 
 			} catch (err) {
 				this.generalUtils.exitWithCriticalError(err);													// Exit with error if unable to read or parse configuration
 			}

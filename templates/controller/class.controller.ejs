@@ -1,45 +1,39 @@
 <% 
 const modelNameLowerCaseFirst = tsClass.name.charAt(0).toLowerCase() + tsClass.name.substring(1);
 -%>
-
+/* -------------------------------------------------------------------------- */
+/*                                   IMPORTS                                  */
+/* -------------------------------------------------------------------------- */
+/* ------------------------------- THIRD PARTY ------------------------------ */
 import { Request, Response } from "express";
-import { <%- modelNameLowerCaseFirst %>Service, controllerService } from "@services";
+/* --------------------------------- CUSTOM --------------------------------- */
+import { <%- modelNameLowerCaseFirst %>Service } from "@services";
 
+
+/* -------------------------------------------------------------------------- */
+/*                            CONTROLLER DEFINITION                           */
+/* -------------------------------------------------------------------------- */
 export class <%- tsClass.name %>Controller {
-    async all(req: Request, res: Response) {
-        try {
-            const <%- modelNameLowerCaseFirst %>s = await <%- modelNameLowerCaseFirst %>Service.all();
-            res.json(<%- modelNameLowerCaseFirst %>s);
-        } catch (err) { controllerService.handleError(err, res); }
+    async all() {
+        return <%- modelNameLowerCaseFirst %>Service.all();
     }
 
-    async byId(req: Request, res: Response) {
-        try {
-            const <%- modelNameLowerCaseFirst %> = await <%- modelNameLowerCaseFirst %>Service.byID(req.params.id);
-            res.json(<%- modelNameLowerCaseFirst %>);
-        } catch (err) { controllerService.handleError(err, res); }
+    async byId(req: Request) {
+        return <%- modelNameLowerCaseFirst %>Service.byID(req.params.id);
     }
 
     async create(req: Request, res: Response) {
-        try {
-            const <%- modelNameLowerCaseFirst %> = await <%- modelNameLowerCaseFirst %>Service.create(req.body);
-            res.status(201).json(<%- modelNameLowerCaseFirst %>);
-        } catch (err) { controllerService.handleError(err, res); }
+        const <%- modelNameLowerCaseFirst %> = await <%- modelNameLowerCaseFirst %>Service.create(req.body);
+        return res.status(201).json(<%- modelNameLowerCaseFirst %>);
     }
 
-    async update(req: Request, res: Response) {
-        try {
-            const <%- modelNameLowerCaseFirst %> = await <%- modelNameLowerCaseFirst %>Service.update(req.params.id, req.body);
-            res.json(<%- modelNameLowerCaseFirst %>);
-        } catch (err) { controllerService.handleError(err, res); }
-
+    async update(req: Request) {
+        return <%- modelNameLowerCaseFirst %>Service.update(req.params.id, req.body);
     }
 
-    async delete(req: Request, res: Response) {
-        try {
-            const <%- modelNameLowerCaseFirst %> = await <%- modelNameLowerCaseFirst %>Service.delete(req.params.id);
-            res.status(204).send();
-        } catch (err) { controllerService.handleError(err, res); }
+    async remove(req: Request, res: Response) {
+        await <%- modelNameLowerCaseFirst %>Service.delete(req.params.id);
+        return res.status(204).send();
     }
 }
 

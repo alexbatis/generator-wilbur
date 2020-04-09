@@ -83,19 +83,29 @@ model.memberVariables.forEach((memberVariable, index) => {
 });
 decoratorArray = decoratorArray.join(",");
 -%>
-import { prop, Typegoose, ModelType, InstanceType } from "typegoose";
+/* -------------------------------------------------------------------------- */
+/*                                   IMPORTS                                  */
+/* -------------------------------------------------------------------------- */
+/* ------------------------------- THIRD PARTY ------------------------------ */
+import { prop, getModelForClass } from "@typegoose/typegoose";
 import { JsonObject, JsonProperty } from "json2typescript";
 import { <%- decoratorArray %> } from "class-validator";
 <%- createAdditionalModelImportsString() %>
 
+/* ---------------------------- PARTIAL INTERFACE --------------------------- */
 interface I<%- model.name %> {
 <% for (var i = 0; i < model.memberVariables.length; i++) { -%>
     <%- model.memberVariables[i].name %>?: <%if (model.memberVariables[i].isArray == true) {%>Array<<%}%><%- model.memberVariables[i].type %><%if (model.memberVariables[i].isArray == true) {%>><%}%>;
 <% } -%>
 }
 
+
+/* -------------------------------------------------------------------------- */
+/*                              CLASS DEFINITION                              */
+/* -------------------------------------------------------------------------- */
 @JsonObject
-export class <%- model.name %> extends Typegoose {
+export class <%- model.name %> {
+    /* ---------------------------- MEMBER VARIABLES ---------------------------- */
 <% for (var i = 0; i < model.memberVariables.length; i++) { -%>
     <% for (var j = 0; j < model.memberVariables[i].decoratorStrings.length; j++) { -%><%- model.memberVariables[i].decoratorStrings[j] -%>
 
@@ -104,14 +114,15 @@ export class <%- model.name %> extends Typegoose {
     <%- model.memberVariables[i].name %>: <%if (model.memberVariables[i].isArray == true) {%>Array<<%}%><%- model.memberVariables[i].type %><%if (model.memberVariables[i].isArray == true) {%>><%}%>;
 
 <% } -%>
+    /* ------------------------------- CONSTRUCTOR ------------------------------ */
     constructor(<%- modelNameLowerCaseFirst %>?: I<%- model.name %>) {
-        super();
     <% for (var i = 0; i < model.memberVariables.length; i++) { -%>
     <%- createConstructorString(model.memberVariables[i]) %>
     <% } -%>
 }
 
-    async validate() {
+    /* --------------------------------- METHODS -------------------------------- */
+    async validateInstance() {
         const errors = await validate(this);
         if (errors.length) throw errors;
         return true;
@@ -121,9 +132,11 @@ export class <%- model.name %> extends Typegoose {
     <% for (var i = 0; i < model.memberVariables.length; i++) { -%>
     this.<%- model.memberVariables[i].name %> = updated<%- model.name %> && updated<%- model.name %>.<%- model.memberVariables[i].name %> || this.<%- model.memberVariables[i].name %>;
     <% } -%>
-    await this.validate();
+    await this.validateInstance();
         return true;
     }
 }
 
-export const <%- model.name %>Model = new <%- model.name %>().getModelForClass(<%- model.name %>, { schemaOptions: { timestamps: true } });
+
+/* ----------------------------- TYPEGOOSE MODEL ---------------------------- */
+export const <%- model.name %>Model = getModelForClass(<%- model.name %>, { schemaOptions: { timestamps: true } });

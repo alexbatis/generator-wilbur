@@ -17,14 +17,17 @@ class ServiceService extends Generator {
         super(args, options);
         this.appName = appName;
         this.fileUtil = new index_1.FileUtils();
+        this.useDI = true;
         this.generalUtils = new index_1.GeneralUtils(args, options);
         this.outputDirectories = constants_1.constants.generateOutputDirectories(this.destinationPath(this.appName));
+        this.useDI = (typeof options.useDI === 'boolean') ? options.useDI : true;
     }
     generateService(tsClass) {
         this.tsClass = tsClass;
         this.classNameCamelCase = this.tsClass.name.charAt(0).toLowerCase() + this.tsClass.name.substring(1);
         this.generateServiceFile();
         this.updateServiceIndexFile(ClassActionType_1.ClassActionType.ADD_EDIT);
+        this.updateDIContainer(ClassActionType_1.ClassActionType.ADD_EDIT);
     }
     removeService(tsClass) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -32,6 +35,7 @@ class ServiceService extends Generator {
             this.classNameCamelCase = this.tsClass.name.charAt(0).toLowerCase() + this.tsClass.name.substring(1);
             yield this.removeServiceFiles();
             this.updateServiceIndexFile(ClassActionType_1.ClassActionType.REMOVE);
+            this.updateDIContainer(ClassActionType_1.ClassActionType.REMOVE);
         });
     }
     removeServiceFiles() {
@@ -41,7 +45,8 @@ class ServiceService extends Generator {
         });
     }
     generateServiceFile() {
-        this.fs.copyTpl(this.generalUtils.directories.templates.service.service, this.outputDirectories.service.base + "/" + this.classNameCamelCase + '/' + this.classNameCamelCase + ".service.ts", { tsClass: this.tsClass });
+        const templatePath = this.generalUtils.directories.templates.service;
+        this.fs.copyTpl((this.useDI) ? templatePath.inversify : templatePath.service, this.outputDirectories.service.base + "/" + this.classNameCamelCase + '/' + this.classNameCamelCase + ".service.ts", { tsClass: this.tsClass });
     }
     updateServiceIndexFile(actionType) {
         let fileContents = this.fs.read(this.outputDirectories.service.index);
@@ -54,6 +59,29 @@ class ServiceService extends Generator {
             fileContents = fileContents.replace(importContent, "");
         }
         this.fs.write(this.outputDirectories.service.index, fileContents);
+    }
+    updateDIContainer(actionType) {
+        console.log('sup');
+        if (!this.useDI)
+            return;
+        console.log('nmu');
+        let fileContents = this.fs.read(this.outputDirectories.app.injectables);
+        const serviceClassName = `${this.tsClass.name}Service`, importContent = `import { ${serviceClassName} } from "@services";`, containerDeclaration = `container.bind<${serviceClassName}>("${serviceClassName}").to(${serviceClassName});`, importComment = "// SERVICE IMPORTS - **DO NOT REMOVE THIS COMMENT**", registerFunction = "export const registerInjectables = (container: Container) => {";
+        if (actionType === ClassActionType_1.ClassActionType.ADD_EDIT) {
+            if (fileContents.indexOf(importContent) === -1) {
+                const insertionIndex = fileContents.indexOf(importComment) + importComment.length;
+                fileContents = fileContents.slice(0, insertionIndex) + `\n${importContent}` + fileContents.slice(insertionIndex);
+            }
+            if (!fileContents.includes(containerDeclaration)) {
+                const insertionIndex = fileContents.indexOf(registerFunction) + registerFunction.length;
+                fileContents = fileContents.slice(0, insertionIndex) + `\n\t${containerDeclaration}` + fileContents.slice(insertionIndex);
+            }
+        }
+        else {
+            fileContents = fileContents.replace(importContent, "");
+            fileContents = fileContents.replace(containerDeclaration, "");
+        }
+        this.fs.write(this.outputDirectories.app.injectables, fileContents);
     }
 }
 exports.ServiceService = ServiceService;

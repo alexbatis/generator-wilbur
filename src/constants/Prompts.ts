@@ -11,6 +11,11 @@ export class Prompts {
         name: "classConfigurationFilePath",
         message: "Your configuration file\'s name",
         default: process.cwd() + '/class.json'
+    }, {
+        type: "confirm",
+        name: "useDI",
+        message: "Use dependency injection? (inversify-express-utils)",
+        default: true
     }];
 
     createRemoveClassPrompt(definedClassNames) {

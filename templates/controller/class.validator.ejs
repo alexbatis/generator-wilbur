@@ -2,52 +2,47 @@
 const modelNameLowerCaseFirst = tsClass.name.charAt(0).toLowerCase() + tsClass.name.substring(1);
 
 const validators = {
-    IsInt : "req.checkBody(\"_$$varName$$_\").isInt().withMessage(\"'_$$varName$$_' must be an integer value.\");",
-    IsString : "req.checkBody(\"_$$varName$$_\").isString().withMessage(\"'_$$varName$$_' must be a string value.\");",
-    IsNotEmpty : "req.checkBody(\"_$$varName$$_\").not().isEmpty().withMessage(\"'_$$varName$$_' must not be empty.\");",
-    isDefined : "req.checkBody(\"_$$varName$$_\").isInt().withMessage(\"'_$$varName$$_' must be an integer value.\");"
+    IsInt : "check(\"_$$varName$$_\").isInt().withMessage(\"'_$$varName$$_' must be an integer value.\")",
+    IsBoolean : "check(\"_$$varName$$_\").isBoolean().withMessage(\"'_$$varName$$_' must be an boolean value.\")",
+    IsString : "check(\"_$$varName$$_\").isString().withMessage(\"'_$$varName$$_' must be a string value.\")",
+    IsNotEmpty : "check(\"_$$varName$$_\").not().isEmpty().withMessage(\"'_$$varName$$_' must not be empty.\")",
+    isDefined : "check(\"_$$varName$$_\").isInt().withMessage(\"'_$$varName$$_' must be an integer value.\")"
 };
 
 
 
 function createRequestValidator(memberVariable, decorator){
-    switch(decorator.name){
-        case "IsInt": return validators.IsInt.split("_$$varName$$_").join(memberVariable.name)
-        case "IsString": return validators.IsString.split("_$$varName$$_").join(memberVariable.name)
-        case "IsNotEmpty": return validators.IsNotEmpty.split("_$$varName$$_").join(memberVariable.name)
-        default:
-            return null;
-    }
+    return (Object.keys(validators).includes(decorator.name)) ?
+        validators[decorator.name].split("_$$varName$$_").join(memberVariable.name) : 
+        null;
+    // switch(decorator.name){
+    //     case "IsInt": return validators.IsInt.split("_$$varName$$_").join(memberVariable.name)
+    //     case "": return validators.IsInt.split("_$$varName$$_").join(memberVariable.name)
+    //     case "IsString": return validators.IsString.split("_$$varName$$_").join(memberVariable.name)
+    //     case "IsNotEmpty": return validators.IsNotEmpty.split("_$$varName$$_").join(memberVariable.name)
+    //     default:
+    //         return null;
+    // }
 }
 
 -%>
-// tslint:disable:indent
-// tslint:disable:no-trailing-whitespace
-import { Request, Response, NextFunction } from "express";
+/* -------------------------------------------------------------------------- */
+/*                                   IMPORTS                                  */
+/* -------------------------------------------------------------------------- */
+/* ------------------------------- THIRD PARTY ------------------------------ */
+import { check, body } from "express-validator";
+/* --------------------------------- CUSTOM --------------------------------- */
 import { controllerService } from "@services";
+const { validateRequest, validateMongoID } = controllerService;
 
-class <%- tsClass.name %>Validator {
-    validateMongoID(req: Request, res: Response, next: NextFunction) {
-        req.checkParams("id", "Must include a valid MongoDB objectID in the request url.").isMongoId();
-        controllerService.assessErrors(req, res, next, req.validationErrors(), "Bad Request: invalid id");
-    }
-
-    validatePost(req: Request, res: Response, next: NextFunction) {
-        controllerService.assessErrors(req, res, next, req.validationErrors(), "Bad Request");
-    }
-
-    validatePut(req: Request, res: Response, next: NextFunction) {<% for (var i=0; i < tsClass.memberVariables.length; i++) { %>
-        if (typeof req.body.<%- tsClass.memberVariables[i].name -%> !== "undefined") {<% for (var j=0; j < tsClass.memberVariables[i].decorators.length; j++) { %> 
-            <%if (createRequestValidator(tsClass.memberVariables[i],tsClass.memberVariables[i].decorators[j])) {-%><%- createRequestValidator(tsClass.memberVariables[i],tsClass.memberVariables[i].decorators[j]) -%><%}-%>
-        <% } %>
-        }
-    <% } -%>
-        
-    
-    controllerService.assessErrors(req, res, next, req.validationErrors(), "Bad Request");
-    }
-}
+/* -------------------------------------------------------------------------- */
+/*                            VALIDATOR DEFINITIONS                           */
+/* -------------------------------------------------------------------------- */
+export const <%- modelNameLowerCaseFirst %>Validator = {
+  validateMongoID: validateRequest(validateMongoID),
+  validatePost: validateRequest([]),
+  validatePut: validateRequest(validateMongoID.concat([<% for (var i=0; i < tsClass.memberVariables.length; i++) { %><% for (var j=0; j < tsClass.memberVariables[i].decorators.length; j++) { %>
+    <%if (createRequestValidator(tsClass.memberVariables[i],tsClass.memberVariables[i].decorators[j])) {-%><%- createRequestValidator(tsClass.memberVariables[i],tsClass.memberVariables[i].decorators[j]) -%><%if (i !== tsClass.memberVariables.length-1) {%>,<%}%><%}-%><% } %><% } -%>]))
+};
 
 
-// Exported Instance
-export const <%- modelNameLowerCaseFirst %>Validator = new <%- tsClass.name %>Validator();

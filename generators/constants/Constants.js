@@ -23,12 +23,14 @@ class Constants {
                 },
                 controller: {
                     base: '/controller',
+                    inversify: '/controller/inversify/class.controller.ejs',
                     controller: '/controller/class.controller.ejs',
                     router: '/controller/class.router.ejs',
                     validator: '/controller/class.validator.ejs'
                 },
                 service: {
                     base: '/service',
+                    inversify: '/service/inversify/class.service.ejs',
                     service: '/service/class.service.ejs'
                 },
                 other: {
@@ -44,6 +46,7 @@ class Constants {
         return {
             app: {
                 base: baseOutputDirectory,
+                injectables: baseOutputDirectory + '/src/common/inversify/injectables.ts'
             },
             models: {
                 base: baseOutputDirectory + '/src/models',
@@ -63,7 +66,7 @@ class Constants {
             controller: {
                 base: baseOutputDirectory + '/src/api/controllers',
                 index: baseOutputDirectory + '/src/api/controllers/index.ts',
-                routes: baseOutputDirectory + '/src/routes.ts'
+                routes: baseOutputDirectory + '/src/api/routes.ts'
             },
             service: {
                 base: baseOutputDirectory + '/src/api/services',

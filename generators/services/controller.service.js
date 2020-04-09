@@ -17,17 +17,21 @@ class ControllerService extends Generator {
         super(args, options);
         this.appName = appName;
         this.fileUtil = new index_1.FileUtils();
+        this.useDI = true;
         this.generalUtils = new index_1.GeneralUtils(args, options);
         this.outputDirectories = constants_1.constants.generateOutputDirectories(this.destinationPath(this.appName));
+        this.useDI = (typeof options.useDI === 'boolean') ? options.useDI : true;
     }
     generateController(tsClass) {
         this.tsClass = tsClass;
         this.classNameCamelCase = this.tsClass.name.charAt(0).toLowerCase() + this.tsClass.name.substring(1);
         this.generateControllerFile();
-        this.generateRouterFile();
         this.generateValidatorFile();
         this.updateControllerIndexFile(ClassActionType_1.ClassActionType.ADD_EDIT);
-        this.updateRoutesFile(ClassActionType_1.ClassActionType.ADD_EDIT);
+        if (!this.useDI) {
+            this.updateRoutesFile(ClassActionType_1.ClassActionType.ADD_EDIT);
+            this.generateRouterFile();
+        }
     }
     removeController(tsClass) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -45,7 +49,8 @@ class ControllerService extends Generator {
         });
     }
     generateControllerFile() {
-        this.fs.copyTpl(this.generalUtils.directories.templates.controller.controller, this.outputDirectories.controller.base + "/" + this.classNameCamelCase + '/' + this.classNameCamelCase + ".controller.ts", { tsClass: this.tsClass });
+        const templatePath = this.generalUtils.directories.templates.controller;
+        this.fs.copyTpl((this.useDI) ? templatePath.inversify : templatePath.controller, this.outputDirectories.controller.base + "/" + this.classNameCamelCase + '/' + this.classNameCamelCase + ".controller.ts", { tsClass: this.tsClass });
     }
     generateRouterFile() {
         this.fs.copyTpl(this.generalUtils.directories.templates.controller.router, this.outputDirectories.controller.base + "/" + this.classNameCamelCase + '/' + this.classNameCamelCase + ".router.ts", { tsClass: this.tsClass });
@@ -55,7 +60,9 @@ class ControllerService extends Generator {
     }
     updateControllerIndexFile(actionType) {
         let fileContents = this.fs.read(this.outputDirectories.controller.index);
-        const importContent = `// ${this.tsClass.name.toUpperCase()}\nexport * from "./${this.classNameCamelCase}/${this.classNameCamelCase}.validator";\nexport * from "./${this.classNameCamelCase}/${this.classNameCamelCase}.controller";\nexport * from "./${this.classNameCamelCase}/${this.classNameCamelCase}.router";`;
+        let importContent = `// ${this.tsClass.name.toUpperCase()}\nexport * from "./${this.classNameCamelCase}/${this.classNameCamelCase}.validator";\nexport * from "./${this.classNameCamelCase}/${this.classNameCamelCase}.controller";`;
+        if (!this.useDI)
+            importContent = `${importContent}\nexport * from "./${this.classNameCamelCase}/${this.classNameCamelCase}.router";`;
         if (actionType === ClassActionType_1.ClassActionType.ADD_EDIT) {
             if (fileContents.indexOf(importContent) === -1)
                 fileContents += `\n${importContent}`;

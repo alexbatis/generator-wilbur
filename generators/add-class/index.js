@@ -38,7 +38,8 @@ class WilburAddClassGenerator extends Generator {
             try {
                 const classConfig = this.fs.readJSON(this.answers.classConfigurationFilePath);
                 this.classToGenerate = index_3.commonService.deserialize(classConfig, models_1.Class);
-                this.classService = new index_3.ClassService(this.args, this.options);
+                const options = Object.assign({}, this.options, { useDI: this.answers.useDI });
+                this.classService = new index_3.ClassService(this.args, options);
             }
             catch (err) {
                 this.generalUtils.exitWithCriticalError(err);

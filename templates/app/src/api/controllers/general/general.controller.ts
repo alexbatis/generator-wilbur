@@ -1,18 +1,22 @@
-import { Request, Response } from "express";
-import { controllerService } from "@services";
+/* -------------------------------------------------------------------------- */
+/*                                   IMPORTS                                  */
+/* -------------------------------------------------------------------------- */
+/* ------------------------------- THIRD PARTY ------------------------------ */
+import { interfaces, controller, httpGet } from "inversify-express-utils";
 
-export class GeneralController {
-    async handleRoot(req: Request, res: Response) {
-        try {
-            res.json({
-                message: "Server up and running",
-                environment: process.env.ENV_NAME,
-                docs: `${process.env.DOMAIN}/docs`,
-                api : `${process.env.DOMAIN}/api/v1/`
-            });
-        } catch (err) { controllerService.handleError(err, res); }
+/* -------------------------------------------------------------------------- */
+/*                            CONTROLLER DEFINITION                           */
+/* -------------------------------------------------------------------------- */
+@controller("/")
+export class GeneralController implements interfaces.Controller {
+
+    @httpGet("/")
+    async handleRoot() {
+        return {
+            message: "Server up and running",
+            environment: process.env.ENV_NAME,
+            docs: `${process.env.DOMAIN}/docs`,
+            api: `${process.env.DOMAIN}/api/v1/`
+        };
     }
 }
-
-// Exported Instance
-export const generalController = new GeneralController();

@@ -4,6 +4,8 @@ const modelNameLowerCaseFirst = tsClass.name.charAt(0).toLowerCase() + tsClass.n
 /* -------------------------------------------------------------------------- */
 /*                                   IMPORTS                                  */
 /* -------------------------------------------------------------------------- */
+/* ------------------------------- THIRD PARTY ------------------------------ */
+import { injectable } from "inversify";
 /* --------------------------------- CUSTOM --------------------------------- */
 import { <%- tsClass.name %>, <%- tsClass.name %>Model, ABError } from "@models";
 
@@ -11,6 +13,7 @@ import { <%- tsClass.name %>, <%- tsClass.name %>Model, ABError } from "@models"
 /* -------------------------------------------------------------------------- */
 /*                             SERVICE DEFINITION                             */
 /* -------------------------------------------------------------------------- */
+@injectable()
 export class <%- tsClass.name %>Service {
 
     async all(): Promise<<%- tsClass.name %>[]> {

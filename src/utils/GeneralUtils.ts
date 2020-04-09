@@ -22,12 +22,14 @@ interface DirectoryScaffold {
         },
         controller: {
             base: string,
+            inversify : string
             controller: string;
             router: string;
             validator: string;
         },
         service: {
             base: string;
+            inversify : string
             service: string;
         },
         other : {
@@ -66,12 +68,14 @@ export class GeneralUtils extends Generator {
                 },
                 controller: {
                     base: sourceRoot + constants.filePaths.templates.base + constants.filePaths.templates.controller.base,
+                    inversify : sourceRoot + constants.filePaths.templates.base + constants.filePaths.templates.controller.inversify,
                     controller: sourceRoot + constants.filePaths.templates.base + constants.filePaths.templates.controller.controller,
                     router: sourceRoot + constants.filePaths.templates.base + constants.filePaths.templates.controller.router,
                     validator: sourceRoot + constants.filePaths.templates.base + constants.filePaths.templates.controller.validator
                 },
                 service: {
                     base: sourceRoot + constants.filePaths.templates.base + constants.filePaths.templates.service.base,
+                    inversify: sourceRoot + constants.filePaths.templates.base + constants.filePaths.templates.service.inversify,
                     service: sourceRoot + constants.filePaths.templates.base + constants.filePaths.templates.service.service
                 },
                 other : {

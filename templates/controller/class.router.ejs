@@ -1,14 +1,28 @@
 <% 
 const modelNameLowerCaseFirst = tsClass.name.charAt(0).toLowerCase() + tsClass.name.substring(1);
 -%>
+/* -------------------------------------------------------------------------- */
+/*                                   IMPORTS                                  */
+/* -------------------------------------------------------------------------- */
+/* ------------------------------- THIRD PARTY ------------------------------ */
 import * as express from "express";
-import * as expressValidator from "express-validator";
+/* --------------------------------- CUSTOM --------------------------------- */
 import { <%- modelNameLowerCaseFirst %>Controller, <%- modelNameLowerCaseFirst %>Validator } from "@controllers";
+import { controllerService } from "@services";
 
+
+/* -------------------------------- CONSTANTS ------------------------------- */
+const { validateMongoID, validatePost, validatePut } = <%- modelNameLowerCaseFirst %>Validator;
+const { validateRequest, performRequest } = controllerService;
+const { all, byId, create, update, remove } = <%- modelNameLowerCaseFirst %>Controller;
+
+
+/* -------------------------------------------------------------------------- */
+/*                              ROUTER DEFINITION                             */
+/* -------------------------------------------------------------------------- */
 export const <%- tsClass.name %>Router = express.Router()
-    .use(expressValidator())
-    .get("/", <%- modelNameLowerCaseFirst %>Controller.all)
-    .get("/:id", <%- modelNameLowerCaseFirst %>Validator.validateMongoID, <%- modelNameLowerCaseFirst %>Controller.byId)
-    .post("/", <%- modelNameLowerCaseFirst %>Validator.validatePost, <%- modelNameLowerCaseFirst %>Controller.create)
-    .put("/:id", <%- modelNameLowerCaseFirst %>Validator.validatePut, <%- modelNameLowerCaseFirst %>Validator.validateMongoID, <%- modelNameLowerCaseFirst %>Controller.update)
-    .delete("/:id", <%- modelNameLowerCaseFirst %>Validator.validateMongoID, <%- modelNameLowerCaseFirst %>Controller.delete);
+    .get("/", performRequest(all))
+    .get("/:id", validateRequest(validateMongoID), performRequest(byId))
+    .post("/", validatePost, performRequest(create))
+    .put("/:id", validatePut, validateMongoID, performRequest(update))
+    .delete("/:id", validateMongoID, performRequest(remove));

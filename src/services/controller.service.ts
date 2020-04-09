@@ -12,12 +12,13 @@ export class ControllerService extends Generator {
     tsClass: Class;                                 // Class to be generated/removed
     fileUtil = new FileUtils();                     // Provides common filesystem functionalities
     private classNameCamelCase: string;             // Camel case name of class to be generated/removed
-
+    useDI = true;                                   // Use dependency injection
 
     constructor(args: any, options: any, private appName: string) {
         super(args, options);
         this.generalUtils = new GeneralUtils(args, options);
         this.outputDirectories = constants.generateOutputDirectories(this.destinationPath(this.appName));
+        this.useDI = (typeof options.useDI === 'boolean') ? options.useDI : true;
     }
 
     /* Given a class, generate all necessary controller  files to existing application */
@@ -25,10 +26,14 @@ export class ControllerService extends Generator {
         this.tsClass = tsClass;                                                                                 // Read existing file contents
         this.classNameCamelCase = this.tsClass.name.charAt(0).toLowerCase() + this.tsClass.name.substring(1);   // Name of class to add/remove
         this.generateControllerFile();                                                                          // Generate controller file
-        this.generateRouterFile();                                                                              // Generate router file
         this.generateValidatorFile();                                                                           // Generate validator file
         this.updateControllerIndexFile(ClassActionType.ADD_EDIT);                                               // Modify index file
-        this.updateRoutesFile(ClassActionType.ADD_EDIT);                                                        // Modify routes file
+
+        if (!this.useDI) {
+            this.updateRoutesFile(ClassActionType.ADD_EDIT);                                                    // Modify routes file
+            this.generateRouterFile();                                                                          // Generate router file
+        }
+
     }
 
     /* Given a class, remove controller, validator, and router */
@@ -48,8 +53,10 @@ export class ControllerService extends Generator {
 
     /* Generate a controller file from a template */
     private generateControllerFile() {
+        const templatePath = this.generalUtils.directories.templates.controller;
+
         this.fs.copyTpl(
-            this.generalUtils.directories.templates.controller.controller,
+            (this.useDI) ? templatePath.inversify : templatePath.controller,
             this.outputDirectories.controller.base + "/" + this.classNameCamelCase + '/' + this.classNameCamelCase + ".controller.ts",
             { tsClass: this.tsClass }
         );
@@ -76,7 +83,8 @@ export class ControllerService extends Generator {
     /* Add or remove exports for controller index file */
     private updateControllerIndexFile(actionType: ClassActionType) {
         let fileContents = this.fs.read(this.outputDirectories.controller.index);                               // Read existing file contents
-        const importContent = `// ${this.tsClass.name.toUpperCase()}\nexport * from "./${this.classNameCamelCase}/${this.classNameCamelCase}.validator";\nexport * from "./${this.classNameCamelCase}/${this.classNameCamelCase}.controller";\nexport * from "./${this.classNameCamelCase}/${this.classNameCamelCase}.router";`;
+        let importContent = `// ${this.tsClass.name.toUpperCase()}\nexport * from "./${this.classNameCamelCase}/${this.classNameCamelCase}.validator";\nexport * from "./${this.classNameCamelCase}/${this.classNameCamelCase}.controller";`;
+        if (!this.useDI) importContent = `${importContent}\nexport * from "./${this.classNameCamelCase}/${this.classNameCamelCase}.router";`;
 
         if (actionType === ClassActionType.ADD_EDIT) {
             if (fileContents.indexOf(importContent) === -1)                                                     // Search if content already exists in file
