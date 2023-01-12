@@ -37,7 +37,7 @@
   ],
   "dependencies": {
     "chalk": "^2.1.0",
-    "class-validator": "^0.9.1",
+    "class-validator": "^0.14.0",
     "concurrently": "^4.0.1",
     "directory-exists": "^2.0.1",
     "json2typescript": "^1.0.6",
